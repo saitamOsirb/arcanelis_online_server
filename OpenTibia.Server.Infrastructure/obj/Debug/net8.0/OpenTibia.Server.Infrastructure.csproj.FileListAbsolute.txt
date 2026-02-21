@@ -1,0 +1,15 @@
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\bin\Debug\net8.0\OpenTibia.Server.Infrastructure.deps.json
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\bin\Debug\net8.0\OpenTibia.Server.Infrastructure.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\bin\Debug\net8.0\OpenTibia.Server.Infrastructure.pdb
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\bin\Debug\net8.0\OpenTibia.Server.Domain.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\bin\Debug\net8.0\OpenTibia.Server.Domain.pdb
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.csproj.AssemblyReference.cache
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.AssemblyInfoInputs.cache
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.AssemblyInfo.cs
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.csproj.CoreCompileInputs.cache
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibi.9D67A809.Up2Date
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\refint\OpenTibia.Server.Infrastructure.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\OpenTibia.Server.Infrastructure.pdb
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Infrastructure\obj\Debug\net8.0\ref\OpenTibia.Server.Infrastructure.dll

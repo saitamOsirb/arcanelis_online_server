@@ -1,0 +1,11 @@
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\bin\Debug\net8.0\OpenTibia.Server.Domain.deps.json
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\bin\Debug\net8.0\OpenTibia.Server.Domain.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\bin\Debug\net8.0\OpenTibia.Server.Domain.pdb
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.AssemblyInfoInputs.cache
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.AssemblyInfo.cs
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.csproj.CoreCompileInputs.cache
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\refint\OpenTibia.Server.Domain.dll
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\OpenTibia.Server.Domain.pdb
+D:\developer\arcanelis\arcanelis_online_server\OpenTibia.Server.Domain\obj\Debug\net8.0\ref\OpenTibia.Server.Domain.dll

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\OpenTibia.Server.Domain\\OpenTibia.Server.Domain.csproj" />
+    <ProjectReference Include="..\\OpenTibia.Server.Infrastructure\\OpenTibia.Server.Infrastructure.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<Content Include="..\data\**\*.*">
+			<Link>data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+<ItemGroup>
+  <Content Remove="..\data\templetes\**" />
+</ItemGroup>
+</Project>

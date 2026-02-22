@@ -3,16 +3,19 @@
   "WorkspaceRootPath": "D:\\developer\\arcanelis\\arcanelis_online_server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|d:\\developer\\arcanelis\\arcanelis_online_server\\opentibia.server.api\\data\\charactertemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|solutionrelative:opentibia.server.api\\data\\charactertemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|d:\\developer\\arcanelis\\arcanelis_online_server\\opentibia.server.api\\opentibia.server.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|solutionrelative:opentibia.server.api\\opentibia.server.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|d:\\developer\\arcanelis\\arcanelis_online_server\\opentibia.server.api\\appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|solutionrelative:opentibia.server.api\\appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|d:\\developer\\arcanelis\\arcanelis_online_server\\opentibia.server.api\\auth\\legacyhmactokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|solutionrelative:opentibia.server.api\\auth\\legacyhmactokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|d:\\developer\\arcanelis\\arcanelis_online_server\\opentibia.server.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4A69FAF-7622-4533-9914-228F5C8EEED6}|OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj|solutionrelative:opentibia.server.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,39 +30,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CharacterTemplate.cs",
-              "DocumentMoniker": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Data\\CharacterTemplate.cs",
-              "RelativeDocumentMoniker": "OpenTibia.Server.Api\\Data\\CharacterTemplate.cs",
-              "ToolTip": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Data\\CharacterTemplate.cs",
-              "RelativeToolTip": "OpenTibia.Server.Api\\Data\\CharacterTemplate.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:41:34.28Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OpenTibia.Server.Api.csproj",
-              "DocumentMoniker": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj",
-              "RelativeDocumentMoniker": "OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj",
-              "ToolTip": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj",
-              "RelativeToolTip": "OpenTibia.Server.Api\\OpenTibia.Server.Api.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-21T02:28:37.702Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\appsettings.json",
               "RelativeDocumentMoniker": "OpenTibia.Server.Api\\appsettings.json",
               "ToolTip": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\appsettings.json",
               "RelativeToolTip": "OpenTibia.Server.Api\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAABgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-21T02:23:24.478Z"
+              "WhenOpened": "2026-02-21T23:55:30.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LegacyHmacTokenService.cs",
+              "DocumentMoniker": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Auth\\LegacyHmacTokenService.cs",
+              "RelativeDocumentMoniker": "OpenTibia.Server.Api\\Auth\\LegacyHmacTokenService.cs",
+              "ToolTip": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Auth\\LegacyHmacTokenService.cs",
+              "RelativeToolTip": "OpenTibia.Server.Api\\Auth\\LegacyHmacTokenService.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAmwGsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T23:54:30.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "D:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "D:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAANMTAAAAAAAAAAAwwOUTAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-02-21T23:10:17.625Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Program.cs",
+              "RelativeDocumentMoniker": "OpenTibia.Server.Api\\Program.cs",
+              "ToolTip": "D:\\developer\\arcanelis\\arcanelis_online_server\\OpenTibia.Server.Api\\Program.cs",
+              "RelativeToolTip": "OpenTibia.Server.Api\\Program.cs",
+              "ViewState": "AgIAALcAAAAAAAAAAAAmwNcAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T23:07:46.995Z",
+              "EditorCaption": ""
             }
           ]
         }

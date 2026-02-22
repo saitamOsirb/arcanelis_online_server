@@ -11,11 +11,11 @@ using OpenTibia.Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ CORS (esto faltaba y causaba tu error)
+// ✅ CORS
 builder.Services.AddCors(o =>
 {
     o.AddDefaultPolicy(p => p
-        .SetIsOriginAllowed(_ => true) // dev: permite todo
+        .SetIsOriginAllowed(_ => true)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());
@@ -31,39 +31,12 @@ builder.Services.AddSingleton<IAccountRepository>(sp =>
 });
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
+// ✅ Template de character (ya lo tenías)
 builder.Services.AddSingleton<OpenTibia.Server.Api.Data.CharacterTemplate>();
 
-// JWT bearer (soporta token por querystring para /ws?token=...)
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var auth = builder.Configuration.GetSection("Auth").Get<AuthOptions>()
-                   ?? throw new InvalidOperationException("Auth section requerida en appsettings.json");
+// ✅ Token legacy (HMAC base64 JSON) 3s
+builder.Services.AddSingleton<ILegacyTokenService, LegacyHmacTokenService>();
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = auth.Issuer,
-            ValidAudience = auth.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(auth.SigningKey)),
-            ClockSkew = TimeSpan.FromSeconds(5)
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = ctx =>
-            {
-                var token = ctx.Request.Query["token"].ToString();
-                if (!string.IsNullOrEmpty(token) && ctx.Request.Path.StartsWithSegments("/ws"))
-                    ctx.Token = token;
-                return Task.CompletedTask;
-            }
-        };
-    });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -76,11 +49,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(20) });
 
-// ✅ Orden correcto: CORS antes de Auth
 app.UseCors();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapGet("/health", () => Results.Ok(new { ok = true }));
 
@@ -97,7 +66,7 @@ app.MapPost("/account", async (
         return Results.BadRequest(new { error = "account/password/name requerido" });
     }
 
-    // BCrypt (workFactor 12 es razonable en dev)
+    // ✅ bcrypt 12 (igual legacy)
     var hash = BCrypt.Net.BCrypt.HashPassword(req.Password, workFactor: 12);
 
     var definition = JsonSerializer.Serialize(new
@@ -109,6 +78,7 @@ app.MapPost("/account", async (
     var created = await repo.CreateAccountAsync(req.Account, hash, definition, ct);
     if (!created) return Results.Conflict(new { error = "Account ya existe" });
 
+    // ✅ JSON completo desde template
     var playerData = template.CreatePlayerJson(req.Name, req.Sex);
 
     var playerCreated = await repo.CreatePlayerAsync(req.Account, req.Name, playerData, ct);
@@ -141,6 +111,7 @@ app.MapPost("/characters/create", async (
     if (!BCrypt.Net.BCrypt.Verify(req.Password, acc.Value.PasswordHash))
         return Results.Unauthorized();
 
+    // ✅ JSON completo desde template
     var playerData = template.CreatePlayerJson(req.Name, req.Sex);
 
     var created = await repo.CreatePlayerAsync(req.Account, req.Name, playerData, ct);
@@ -149,9 +120,13 @@ app.MapPost("/characters/create", async (
     return Results.Ok(new { ok = true });
 });
 
-app.MapPost("/login-character", async (JsonElement body, IAccountRepository repo, ITokenService tokens, CancellationToken ct) =>
+app.MapPost("/login-character", async (
+    JsonElement body,
+    IAccountRepository repo,
+    ILegacyTokenService legacy,
+    IConfiguration cfg,
+    CancellationToken ct) =>
 {
-    // Body esperado: { "account":"", "password":"", "name":"" }
     if (!body.TryGetProperty("account", out var accProp) ||
         !body.TryGetProperty("password", out var pwdProp) ||
         !body.TryGetProperty("name", out var nameProp))
@@ -173,11 +148,15 @@ app.MapPost("/login-character", async (JsonElement body, IAccountRepository repo
     if (!belongs)
         return Results.NotFound(new { error = "Character no existe o no pertenece a la cuenta" });
 
-    var token = tokens.CreateCharacterToken(account, name);
-    return Results.Ok(new TokenResponse(token));
+    // ✅ Token legacy exacto (3s)
+    var token = legacy.CreateBase64Token(name);
+
+    // ✅ Host legacy
+    var host = cfg["Server:EXTERNAL_HOST"] ?? "ws://127.0.0.1:2222";
+
+    return Results.Ok(new { token, host });
 });
 
-// WebSocket protegido por JWT (querystring: /ws?token=...)
 app.Map("/ws", async ctx =>
 {
     if (!ctx.WebSockets.IsWebSocketRequest)
@@ -186,18 +165,10 @@ app.Map("/ws", async ctx =>
         return;
     }
 
-    // ✅ AuthenticateAsync extensión (requiere using Microsoft.AspNetCore.Authentication;)
-    var auth = await ctx.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-    if (!auth.Succeeded || auth.Principal is null)
-    {
-        ctx.Response.StatusCode = 401;
-        return;
-    }
+    var token = ctx.Request.Query["token"].ToString();
+    var legacy = ctx.RequestServices.GetRequiredService<ILegacyTokenService>();
 
-    var charName = auth.Principal.Claims.FirstOrDefault(c => c.Type == "char")?.Value;
-    var acct = auth.Principal.Claims.FirstOrDefault(c => c.Type == "acct")?.Value;
-
-    if (string.IsNullOrWhiteSpace(charName) || string.IsNullOrWhiteSpace(acct))
+    if (!legacy.TryValidateBase64Token(token, out var characterName))
     {
         ctx.Response.StatusCode = 401;
         return;
@@ -205,15 +176,39 @@ app.Map("/ws", async ctx =>
 
     using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
 
-    // MVP: echo loop binario
+    var buffer = new byte[64 * 1024];
+    while (ws.State == WebSocketState.Open && !ctx.RequestAborted.IsCancellationRequested)
+    {
+        var res = await ws.ReceiveAsync(buffer, ctx.RequestAborted);
+        if (res.MessageType == WebSocketMessageType.Close) break;
+        await ws.SendAsync(buffer.AsMemory(0, res.Count), WebSocketMessageType.Binary, true, ctx.RequestAborted);
+    }
+});
+
+app.Map("/", async ctx =>
+{
+    if (!ctx.WebSockets.IsWebSocketRequest)
+    {
+        ctx.Response.StatusCode = 426;
+        return;
+    }
+
+    var token = ctx.Request.Query["token"].ToString();
+    var legacy = ctx.RequestServices.GetRequiredService<ILegacyTokenService>();
+
+    if (!legacy.TryValidateBase64Token(token, out _))
+    {
+        ctx.Response.StatusCode = 401;
+        return;
+    }
+
+    using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
     var buffer = new byte[64 * 1024];
 
     while (ws.State == WebSocketState.Open && !ctx.RequestAborted.IsCancellationRequested)
     {
         var res = await ws.ReceiveAsync(buffer, ctx.RequestAborted);
-        if (res.MessageType == WebSocketMessageType.Close)
-            break;
-
+        if (res.MessageType == WebSocketMessageType.Close) break;
         await ws.SendAsync(buffer.AsMemory(0, res.Count), WebSocketMessageType.Binary, true, ctx.RequestAborted);
     }
 });

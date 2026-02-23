@@ -1,17 +1,24 @@
-using System.Net.WebSockets;
-using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using OpenTibia.Server.Api.Auth;
 using OpenTibia.Server.Domain;
 using OpenTibia.Server.Infrastructure;
+using OpenTibia.Server.Game.Core;
+using OpenTibia.Server.Game.Loop;
+using OpenTibia.Server.Game.Sessions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ CORS
+
+builder.Services.AddSingleton<SessionRegistry>();
+
+builder.Services.Configure<GameOptions>(builder.Configuration.GetSection("Game"));
+builder.Services.AddSingleton<GameOptions>(sp => sp.GetRequiredService<IOptions<GameOptions>>().Value);
+
+builder.Services.AddSingleton<GameServer>();
+builder.Services.AddHostedService<GameLoopService>();
+
+
 builder.Services.AddCors(o =>
 {
     o.AddDefaultPolicy(p => p
@@ -21,6 +28,7 @@ builder.Services.AddCors(o =>
         .AllowCredentials());
 });
 
+
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 
 builder.Services.AddSingleton<IAccountRepository>(sp =>
@@ -29,29 +37,29 @@ builder.Services.AddSingleton<IAccountRepository>(sp =>
              ?? throw new InvalidOperationException("ConnectionStrings:Postgres requerido");
     return new AccountRepository(cs);
 });
+
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-// ✅ Template de character (ya lo tenías)
 builder.Services.AddSingleton<OpenTibia.Server.Api.Data.CharacterTemplate>();
 
-// ✅ Token legacy (HMAC base64 JSON) 3s
-builder.Services.AddSingleton<ILegacyTokenService, LegacyHmacTokenService>();
 
+builder.Services.AddSingleton<ILegacyTokenService, LegacyHmacTokenService>();
 
 var app = builder.Build();
 
-// Crear schema en DB al arrancar
 using (var scope = app.Services.CreateScope())
 {
     var repo = scope.ServiceProvider.GetRequiredService<IAccountRepository>();
     await repo.EnsureSchemaAsync(CancellationToken.None);
 }
 
-app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(20) });
 
+app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(20) });
 app.UseCors();
 
 app.MapGet("/health", () => Results.Ok(new { ok = true }));
+
+
 
 app.MapPost("/account", async (
     CreateAccountRequest req,
@@ -66,7 +74,6 @@ app.MapPost("/account", async (
         return Results.BadRequest(new { error = "account/password/name requerido" });
     }
 
-    // ✅ bcrypt 12 (igual legacy)
     var hash = BCrypt.Net.BCrypt.HashPassword(req.Password, workFactor: 12);
 
     var definition = JsonSerializer.Serialize(new
@@ -78,7 +85,6 @@ app.MapPost("/account", async (
     var created = await repo.CreateAccountAsync(req.Account, hash, definition, ct);
     if (!created) return Results.Conflict(new { error = "Account ya existe" });
 
-    // ✅ JSON completo desde template
     var playerData = template.CreatePlayerJson(req.Name, req.Sex);
 
     var playerCreated = await repo.CreatePlayerAsync(req.Account, req.Name, playerData, ct);
@@ -111,7 +117,6 @@ app.MapPost("/characters/create", async (
     if (!BCrypt.Net.BCrypt.Verify(req.Password, acc.Value.PasswordHash))
         return Results.Unauthorized();
 
-    // ✅ JSON completo desde template
     var playerData = template.CreatePlayerJson(req.Name, req.Sex);
 
     var created = await repo.CreatePlayerAsync(req.Account, req.Name, playerData, ct);
@@ -148,10 +153,8 @@ app.MapPost("/login-character", async (
     if (!belongs)
         return Results.NotFound(new { error = "Character no existe o no pertenece a la cuenta" });
 
-    // ✅ Token legacy exacto (3s)
     var token = legacy.CreateBase64Token(name);
 
-    // ✅ Host legacy
     var host = cfg["Server:EXTERNAL_HOST"] ?? "ws://127.0.0.1:2222";
 
     return Results.Ok(new { token, host });
@@ -166,9 +169,9 @@ app.Map("/ws", async ctx =>
     }
 
     var token = ctx.Request.Query["token"].ToString();
-    var legacy = ctx.RequestServices.GetRequiredService<ILegacyTokenService>();
 
-    if (!legacy.TryValidateBase64Token(token, out var characterName))
+    var legacyToken = ctx.RequestServices.GetRequiredService<ILegacyTokenService>();
+    if (!legacyToken.TryValidateBase64Token(token, out var characterName))
     {
         ctx.Response.StatusCode = 401;
         return;
@@ -176,41 +179,10 @@ app.Map("/ws", async ctx =>
 
     using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
 
-    var buffer = new byte[64 * 1024];
-    while (ws.State == WebSocketState.Open && !ctx.RequestAborted.IsCancellationRequested)
-    {
-        var res = await ws.ReceiveAsync(buffer, ctx.RequestAborted);
-        if (res.MessageType == WebSocketMessageType.Close) break;
-        await ws.SendAsync(buffer.AsMemory(0, res.Count), WebSocketMessageType.Binary, true, ctx.RequestAborted);
-    }
-});
+    var game = ctx.RequestServices.GetRequiredService<GameServer>();
+    var session = game.CreateSession(characterName, ws);
 
-app.Map("/", async ctx =>
-{
-    if (!ctx.WebSockets.IsWebSocketRequest)
-    {
-        ctx.Response.StatusCode = 426;
-        return;
-    }
-
-    var token = ctx.Request.Query["token"].ToString();
-    var legacy = ctx.RequestServices.GetRequiredService<ILegacyTokenService>();
-
-    if (!legacy.TryValidateBase64Token(token, out _))
-    {
-        ctx.Response.StatusCode = 401;
-        return;
-    }
-
-    using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
-    var buffer = new byte[64 * 1024];
-
-    while (ws.State == WebSocketState.Open && !ctx.RequestAborted.IsCancellationRequested)
-    {
-        var res = await ws.ReceiveAsync(buffer, ctx.RequestAborted);
-        if (res.MessageType == WebSocketMessageType.Close) break;
-        await ws.SendAsync(buffer.AsMemory(0, res.Count), WebSocketMessageType.Binary, true, ctx.RequestAborted);
-    }
+    await session.RunAsync(ctx.RequestAborted);
 });
 
 app.Run();

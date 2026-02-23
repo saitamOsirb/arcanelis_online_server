@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\\OpenTibia.Server.Domain\\OpenTibia.Server.Domain.csproj" />
     <ProjectReference Include="..\\OpenTibia.Server.Infrastructure\\OpenTibia.Server.Infrastructure.csproj" />
+    <ProjectReference Include="..\OpenTibia.Server.Game\OpenTibia.Server.Game.csproj" />
   </ItemGroup>
 	<ItemGroup>
 		<Content Include="..\data\**\*.*">
